@@ -1,27 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
 
 export const config = {
   matcher: ["/admin/:path*", "/api/admin/:path*"],
 };
 
-export function middleware(req: NextRequest) {
-  const user = process.env.ADMIN_USER ?? "admin";
-  const pass = process.env.ADMIN_PASSWORD ?? "fse2026";
-
-  const auth = req.headers.get("authorization");
-  if (auth) {
-    const [scheme, encoded] = auth.split(" ");
-    if (scheme === "Basic" && encoded) {
-      const decoded = Buffer.from(encoded, "base64").toString();
-      const [u, p] = decoded.split(":");
-      if (u === user && p === pass) {
-        return NextResponse.next();
-      }
-    }
+export async function middleware(req: NextRequest) {
+  // Allow access to the login page itself + the login API endpoint
+  const path = req.nextUrl.pathname;
+  if (path === "/admin/login" || path === "/api/admin/login" || path === "/api/admin/logout") {
+    return NextResponse.next();
   }
 
-  return new NextResponse("Authentication required", {
-    status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="FSE 2026 Admin"' },
-  });
+  const token = req.cookies.get(SESSION_COOKIE)?.value;
+  const valid = await verifySessionToken(token);
+
+  if (!valid) {
+    if (path.startsWith("/api/")) {
+      return new NextResponse(JSON.stringify({ ok: false, error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    const url = req.nextUrl.clone();
+    url.pathname = "/admin/login";
+    url.searchParams.set("from", path);
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
 }

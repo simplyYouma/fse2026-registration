@@ -4,69 +4,78 @@ Formulaire d'inscription pour la conférence ESEC/FSE '26 (Montréal, 5-9 juille
 
 ## Stack
 
-- Next.js 15 (App Router) + TypeScript
+- Next.js 16 (App Router) + TypeScript
 - Tailwind CSS v4
-- Prisma 7 + SQLite (local) / Postgres (prod recommandé)
-- Basic Auth pour l'admin
+- Prisma 7 + **PostgreSQL** (Vercel + Neon)
+- Cookie-based session auth (HMAC-SHA256, Edge-compatible)
+- i18n FR/EN avec toggle (FR par défaut)
 
 ## Démarrage local
 
-```bash
+Tu as besoin d'un Postgres local (Docker, ou utilise une branche Neon free).
+
+```powershell
 npm install
-npx prisma migrate dev
+# édite .env et mets ton DATABASE_URL Postgres
+npx prisma db push
 npm run dev
 ```
 
 - Formulaire : http://localhost:3000
-- Admin : http://localhost:3000/admin (login : `admin` / `fse2026`)
-- Export CSV : http://localhost:3000/api/admin/export
+- Login admin : http://localhost:3000/admin/login (`admin` / `fse2026`)
 
-## Déploiement Vercel
+## Déploiement Vercel — A à Z
 
-> **Important** : SQLite ne fonctionne pas sur Vercel (filesystem readonly). Pour la prod il faut basculer sur **Postgres** (Vercel Postgres / Neon — gratuit) ou **Turso** (libSQL).
+### 1) Créer la base Postgres sur Vercel
 
-### Option recommandée : Vercel Postgres (Neon)
+1. https://vercel.com/new → importer le repo GitHub
+2. **Root Directory** : `fse2026-app/`
+3. Avant de déployer : onglet **Storage** → **Create Database** → **Neon Postgres**
+4. Vercel ajoute automatiquement `DATABASE_URL` au projet ✅
 
-1. Push le projet sur GitHub.
-2. Sur Vercel → **New Project** → importer le repo.
-3. Onglet **Storage** → **Create Database** → **Neon Postgres**.
-4. Vercel crée automatiquement la variable `DATABASE_URL`.
-5. Modifier `prisma/schema.prisma` :
-   ```prisma
-   datasource db { provider = "postgresql" }
-   ```
-6. Installer l'adapter Postgres :
-   ```bash
-   npm uninstall @prisma/adapter-better-sqlite3 better-sqlite3
-   npm install @prisma/adapter-pg pg
-   ```
-7. Modifier `lib/prisma.ts` :
-   ```ts
-   import { PrismaPg } from "@prisma/adapter-pg";
-   const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-   ```
-8. Variables d'env Vercel :
-   - `ADMIN_USER` = ton user
-   - `ADMIN_PASSWORD` = mot de passe fort
-9. Ajoute la migration au build dans `package.json` :
-   ```json
-   "scripts": { "build": "prisma migrate deploy && next build" }
-   ```
-10. Déployer.
+### 2) Variables d'environnement
 
-## Variables d'environnement
+Settings → Environment Variables :
 
-| Variable | Description |
+| Variable | Valeur |
 |---|---|
-| `DATABASE_URL` | Connexion DB (sqlite local ou Postgres prod) |
-| `ADMIN_USER` | Identifiant admin (défaut: `admin`) |
-| `ADMIN_PASSWORD` | Mot de passe admin (défaut: `fse2026` — **change en prod !**) |
+| `DATABASE_URL` | (auto, créée par Neon) |
+| `ADMIN_USER` | `admin` (ou ton choix) |
+| `ADMIN_PASSWORD` | un mot de passe **fort** |
+| `ADMIN_SESSION_SECRET` | une chaîne aléatoire longue (min 32 chars) — utilise `openssl rand -hex 32` |
+
+### 3) Déployer
+
+Click **Deploy**. Le build exécute :
+```
+prisma generate && prisma db push --accept-data-loss && next build
+```
+qui crée les tables sur Neon automatiquement au premier déploiement.
+
+### 4) Vérifier
+
+| URL | Action |
+|---|---|
+| `/` | Splash + formulaire |
+| `/admin/login` | Page de login |
+| `/admin` | Dashboard (si connecté) sinon redirige vers login |
+| `/api/admin/export` | Téléchargement CSV (auth requise) |
 
 ## Routes
 
 | Route | Description |
 |---|---|
-| `/` | Formulaire d'inscription public (8 étapes) |
-| `/admin` | Dashboard protégé (Basic Auth) |
-| `/api/register` | POST — soumet une inscription |
-| `/api/admin/export` | GET — télécharge toutes les inscriptions en CSV |
+| `/` | Formulaire public 8 étapes (FR/EN) |
+| `/admin/login` | Page de connexion admin |
+| `/admin` | Dashboard protégé |
+| `POST /api/register` | Soumet une inscription |
+| `POST /api/admin/login` | Authentifie l'admin → cookie session |
+| `POST /api/admin/logout` | Déconnecte |
+| `GET /api/admin/export` | CSV des inscriptions |
+
+## Sécurité
+
+- Cookie de session **httpOnly, secure (en prod), sameSite=lax**, durée **7 jours**
+- Token signé HMAC-SHA256 avec `ADMIN_SESSION_SECRET`
+- Vérification dans le middleware Edge (Web Crypto)
+- Comparaison du mot de passe en clair contre `ADMIN_PASSWORD` (env) — si tu veux passer à du bcrypt/argon2, ouvre une issue

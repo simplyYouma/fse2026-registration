@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { LogoutButton } from "@/components/logout-button";
 
 export const dynamic = "force-dynamic";
 
@@ -17,9 +18,12 @@ export default async function AdminPage() {
             <h1 className="text-2xl font-bold">FSE 2026 — Admin Dashboard</h1>
             <p className="text-blue-100 text-sm">Manage and export registrations</p>
           </div>
-          <a href="/api/admin/export" className="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition">
-            ⬇ Export CSV
-          </a>
+          <div className="flex items-center gap-2">
+            <a href="/api/admin/export" className="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition">
+              Export CSV
+            </a>
+            <LogoutButton />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
