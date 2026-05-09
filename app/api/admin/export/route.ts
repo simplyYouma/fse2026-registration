@@ -13,12 +13,14 @@ export async function GET() {
   const headers = [
     "id", "createdAt", "firstName", "lastName", "email", "registrationType",
     "address1", "address2", "country", "city", "state", "zipCode",
-    "gender", "genderOther", "region", "certificateOfAttendance", "vatNumber",
-    "studentProofFileName", "hasDisability", "dietaryRestrictions",
+    "gender", "genderOther", "region", "certificateOfAttendance", "vatRequired", "vatNumber",
+    "studentProofFileName", "hasDisability", "disabilitySpecify", "disabilityDetail", "dietaryRestrictions",
     "cvOptIn", "cvFileName", "visaSupportLetter", "postalMailOptOut", "emailOptOut", "virtualConsent",
-    "ukEea", "genderIdentity", "birthYear", "ethnicOrigin", "ethnicOriginDetails",
-    "race", "raceDetails", "acmDisability", "currentCountry",
-    "mainItem", "banquet", "mentoringSymposium", "paperAuthor", "reroutedPresentations",
+    "ukEea", "ukEeaConsent", "genderIdentity", "birthYear", "ethnicOrigin", "ethnicOriginDetails",
+    "race", "raceDetails", "acmDisability", "acmDisabilityDetails", "currentCountry",
+    "mainItem", "banquet", "mentoringSymposium",
+    "paperAuthor", "fseTrack", "paperId",
+    "reroutedPresentations", "paperTitle", "paperAuthors", "paperOriginalUrl",
     "addOns", "oneDayEvent", "coLocatedConference", "totalAmount",
   ];
 

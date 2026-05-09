@@ -33,11 +33,14 @@ model Registration {
 
   // Certificate / VAT
   certificateOfAttendance  Boolean  @default(false)
+  vatRequired              Boolean  @default(false)
   vatNumber                String?
 
   // Registration Questions
   studentProofFileName     String?
   hasDisability            String?
+  disabilitySpecify        String?
+  disabilityDetail         String?
   dietaryRestrictions      String?
 
   // Sponsors & Communications
@@ -50,6 +53,8 @@ model Registration {
 
   // ACM Demographics
   ukEea                    String?
+  ukEeaConsent             String?
+  acmDisabilityDetails     String?
   genderIdentity           String?
   birthYear                String?
   ethnicOrigin             String?
@@ -64,7 +69,12 @@ model Registration {
   banquet                  String?
   mentoringSymposium       String?
   paperAuthor              String?
+  fseTrack                 String?
+  paperId                  String?
   reroutedPresentations    String?
+  paperTitle               String?
+  paperAuthors             String?
+  paperOriginalUrl         String?
 
   // Add-ons
   addOns                   String?

@@ -100,6 +100,24 @@ export const ONE_DAY_EVENTS = [
   "None (I am not attending any one-day co-located event.)",
 ];
 
+export const ACM_DISABILITY_TYPES = [
+  "Deaf/deaf or have serious difficulty hearing",
+  "Blind or have serious difficulty seeing, even when wearing glasses",
+  "Mobility limitation including serious difficulty walking or climbing stairs",
+  "Motor limitation including manual dexterity",
+  "Learning disability",
+  "Neurodiverse",
+  "Speech or language impairment",
+  "Chronic illness that is neurological, physical, or a mental health diagnosis",
+  "Temporary impairment",
+  "Other type of disability",
+];
+
+export const FSE_TRACKS = [
+  "Research Track", "Industry Track", "Demonstrations", "Tool Demos",
+  "Doctoral Symposium", "New Ideas", "Replications", "Other",
+];
+
 export const CO_LOCATED_CONFERENCES = [
   "AIware (please ensure you have registered for AIware or AIware + FSE combo)",
   "PROMISE",

@@ -187,6 +187,46 @@ export const translations = {
     err_required: "Champ requis",
     err_email: "E-mail valide requis",
 
+    // VAT extended
+    vat_check: "Si votre entreprise paie vos frais d'inscription et exige que son numéro de TVA figure sur la facture, ajoutez le numéro ici.",
+    vat_input_label: "Numéro de TVA ou autre information additionnelle :",
+
+    // Disability sub-options (step 3)
+    disability_specify_q: "Si vous avez sélectionné Oui, veuillez choisir :",
+    prefer_not_specify: "Je préfère ne pas préciser",
+    please_specify: "Veuillez préciser :",
+
+    // Paper author (step 6)
+    paper_track_label: "Veuillez indiquer le track FSE",
+    paper_track_help: "Note : si vous avez plusieurs articles, séparez-les par des virgules (ex : Track 1, Track 2). Veillez à respecter le même ordre que dans le champ ID.",
+    paper_id_label: "Veuillez indiquer l'ID de l'article",
+    paper_id_help: "Note : si vous avez plusieurs articles, séparez-les par des virgules (ex : 101, 102). Veillez à respecter le même ordre que dans le champ Track.",
+
+    // Re-routed (step 6)
+    paper_title_label: "Veuillez indiquer le titre de l'article",
+    paper_authors_label: "Veuillez indiquer les auteurs",
+    paper_url_label: "Veuillez indiquer le lien vers l'article original sur le site de la conférence.",
+
+    // ACM disability details (step 5)
+    disability_select_q: "Avez-vous un handicap ? Veuillez sélectionner TOUT ce qui s'applique.",
+    disab_deaf: "Sourd(e) ou difficultés sérieuses d'audition",
+    disab_blind: "Aveugle ou difficultés sérieuses de vision, même avec des lunettes",
+    disab_mobility: "Limitation de mobilité incluant difficultés à marcher ou monter des escaliers",
+    disab_motor: "Limitation motrice incluant la dextérité manuelle",
+    disab_learning: "Trouble de l'apprentissage",
+    disab_neuro: "Neurodivergence",
+    disab_speech: "Trouble de la parole ou du langage",
+    disab_chronic: "Maladie chronique neurologique, physique ou diagnostic de santé mentale",
+    disab_temp: "Handicap temporaire",
+    disab_other_type: "Autre type de handicap",
+
+    // UK/EEA consent (step 5)
+    uk_eea_link: "Cliquez ici pour voir la liste des pays :",
+    uk_eea_consent_q: "Si vous êtes au Royaume-Uni ou dans l'EEE, veuillez sélectionner UNE des trois options suivantes :",
+    uk_eea_consent_1: "Je consens à ce qu'ACM utilise mes données personnelles révélant des informations sur mon genre, ma race, mon ethnicité ou mon handicap fournies dans le sondage ci-dessous, à des fins d'analyse et de suivi liées à la diversité, l'équité et l'inclusion.",
+    uk_eea_consent_2: "Je consens à fournir une partie, mais pas la totalité, des informations personnelles décrites ci-dessus, et je sélectionnerai « Préfère ne pas répondre » pour les questions concernées.",
+    uk_eea_consent_3: "Je ne souhaite fournir aucune de mes informations personnelles.",
+
     // Footer
     footer: "© 2026 ESEC/FSE — Association for Computing Machinery",
   },
@@ -360,6 +400,40 @@ export const translations = {
 
     err_required: "Required",
     err_email: "Valid email required",
+
+    vat_check: "If your company is paying your registration fee and requires that their VAT number is listed on the invoice, please add VAT # here.",
+    vat_input_label: "VAT number or other additional information:",
+
+    disability_specify_q: "If you selected yes, please choose one:",
+    prefer_not_specify: "Prefer not to specify",
+    please_specify: "Please specify:",
+
+    paper_track_label: "Please provide FSE track",
+    paper_track_help: "Note: If you have multiple papers, please separate them by commas, e.g., Track 1, Track 2. Please ensure the order matches the sequence in the ID field.",
+    paper_id_label: "Please provide paper ID",
+    paper_id_help: "Note: If you have multiple papers, please separate them by commas, e.g., 101, 102. Please ensure the order matches the sequence in the Track field.",
+
+    paper_title_label: "Please provide paper title",
+    paper_authors_label: "Please provide authors",
+    paper_url_label: "Please provide pointer to the original conference paper at the conference's website.",
+
+    disability_select_q: "Do you have a disability? Please select ALL that apply.",
+    disab_deaf: "Deaf/deaf or have serious difficulty hearing",
+    disab_blind: "Blind or have serious difficulty seeing, even when wearing glasses",
+    disab_mobility: "Mobility limitation including serious difficulty walking or climbing stairs",
+    disab_motor: "Motor limitation including manual dexterity",
+    disab_learning: "Learning disability",
+    disab_neuro: "Neurodiverse",
+    disab_speech: "Speech or language impairment",
+    disab_chronic: "Chronic illness that is neurological, physical, or a mental health diagnosis",
+    disab_temp: "Temporary impairment",
+    disab_other_type: "Other type of disability",
+
+    uk_eea_link: "Click here to view the list of countries:",
+    uk_eea_consent_q: "If you are in the UK or EEA, please select one (1) of the following three (3) options:",
+    uk_eea_consent_1: "I consent to ACM using my personal data revealing information about my gender, race, ethnicity, or disability that I provide in response to the survey below for the diversity, equity, inclusion, analysis, and monitoring purposes described above.",
+    uk_eea_consent_2: "I consent to provide some, but not all of the personal information set out in option 1 above for the purposes described above, and will select 'Prefer not to disclose' as a response to each question for which I do not wish to provide the requested personal information.",
+    uk_eea_consent_3: "I do not wish to provide any of my personal information.",
 
     footer: "© 2026 ESEC/FSE — Association for Computing Machinery",
   },

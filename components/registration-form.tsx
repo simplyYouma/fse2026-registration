@@ -12,17 +12,21 @@ type FormState = {
   address1: string; address2: string; country: string; city: string;
   state: string; zipCode: string;
   gender: string; genderOther: string; region: string;
-  certificateOfAttendance: boolean; vatNumber: string;
+  certificateOfAttendance: boolean; vatRequired: boolean; vatNumber: string;
   studentProofFileName: string; hasDisability: string;
+  disabilitySpecify: string; disabilityDetail: string;
   dietaryRestrictions: string[];
   cvOptIn: string; cvFileName: string; visaSupportLetter: string;
   postalMailOptOut: boolean; emailOptOut: string; virtualConsent: boolean;
-  ukEea: string; genderIdentity: string; birthYear: string;
+  ukEea: string; ukEeaConsent: string;
+  genderIdentity: string; birthYear: string;
   ethnicOrigin: string; ethnicOriginDetails: string[];
   race: string; raceDetails: string[];
-  acmDisability: string; currentCountry: string;
+  acmDisability: string; acmDisabilityDetails: string[];
+  currentCountry: string;
   mainItem: string; banquet: string; mentoringSymposium: string;
-  paperAuthor: string; reroutedPresentations: string;
+  paperAuthor: string; fseTrack: string; paperId: string;
+  reroutedPresentations: string; paperTitle: string; paperAuthors: string; paperOriginalUrl: string;
   addOns: string[];
   oneDayEvent: string[]; coLocatedConference: string[];
 };
@@ -31,17 +35,21 @@ const initialState: FormState = {
   firstName: "", lastName: "", email: "", registrationType: "",
   address1: "", address2: "", country: "", city: "", state: "", zipCode: "",
   gender: "", genderOther: "", region: "",
-  certificateOfAttendance: false, vatNumber: "",
+  certificateOfAttendance: false, vatRequired: false, vatNumber: "",
   studentProofFileName: "", hasDisability: "",
+  disabilitySpecify: "", disabilityDetail: "",
   dietaryRestrictions: [],
   cvOptIn: "", cvFileName: "", visaSupportLetter: "",
   postalMailOptOut: false, emailOptOut: "", virtualConsent: false,
-  ukEea: "", genderIdentity: "", birthYear: "",
+  ukEea: "", ukEeaConsent: "",
+  genderIdentity: "", birthYear: "",
   ethnicOrigin: "", ethnicOriginDetails: [],
   race: "", raceDetails: [],
-  acmDisability: "", currentCountry: "",
+  acmDisability: "", acmDisabilityDetails: [],
+  currentCountry: "",
   mainItem: "", banquet: "", mentoringSymposium: "",
-  paperAuthor: "", reroutedPresentations: "",
+  paperAuthor: "", fseTrack: "", paperId: "",
+  reroutedPresentations: "", paperTitle: "", paperAuthors: "", paperOriginalUrl: "",
   addOns: [],
   oneDayEvent: [], coLocatedConference: [],
 };
@@ -110,6 +118,7 @@ export default function RegistrationForm() {
         dietaryRestrictions: data.dietaryRestrictions.join(", "),
         ethnicOriginDetails: data.ethnicOriginDetails.join(", "),
         raceDetails: data.raceDetails.join(", "),
+        acmDisabilityDetails: data.acmDisabilityDetails.join(", "),
         addOns: data.addOns.join(", "),
         oneDayEvent: data.oneDayEvent.join(", "),
         coLocatedConference: data.coLocatedConference.join(", "),
@@ -147,11 +156,11 @@ export default function RegistrationForm() {
 
   if (!started) {
     return (
-      <div className="max-w-2xl mx-auto">
-        <div className="flex justify-end mb-3">
+      <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center max-w-2xl mx-auto">
+        <div className="self-end mb-3">
           <LangSwitch />
         </div>
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-14 md:p-16 text-center">
+        <div className="w-full bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-14 md:p-16 text-center">
           <div className="inline-block text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold mb-6">
             {t("splash_label")}
           </div>
@@ -419,9 +428,23 @@ function StepAddress({ data, update, errors }: Props) {
           </label>
         </div>
 
-        <Field label={t("vat_label")}>
-          <input className="fse-input" value={data.vatNumber} onChange={e => update("vatNumber", e.target.value)} placeholder={t("vat_help")} />
-        </Field>
+        <div>
+          <h3 className="font-semibold text-slate-900 mb-2">{t("vat_label")}</h3>
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input type="checkbox" checked={data.vatRequired}
+              onChange={e => update("vatRequired", e.target.checked)}
+              className="w-4 h-4 mt-0.5 text-blue-600" />
+            <span className="text-sm">{t("vat_check")}</span>
+          </label>
+          {data.vatRequired && (
+            <div className="mt-3 ml-6">
+              <Field label={t("vat_input_label")} required>
+                <input className="fse-input" value={data.vatNumber}
+                  onChange={e => update("vatNumber", e.target.value)} />
+              </Field>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -459,6 +482,25 @@ function StepQuestions({ data, update, toggle }: Props) {
               </label>
             ))}
           </div>
+          {data.hasDisability === "Yes" && (
+            <div className="ml-6 mt-3 border-l-2 border-blue-200 pl-4 space-y-2">
+              <p className="text-sm font-medium fse-required">{t("disability_specify_q")}</p>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="disabilitySpecify" checked={data.disabilitySpecify === "Prefer not to specify"}
+                  onChange={() => update("disabilitySpecify", "Prefer not to specify")} className="w-4 h-4 text-blue-600" />
+                <span>{t("prefer_not_specify")}</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="disabilitySpecify" checked={data.disabilitySpecify === "Please specify"}
+                  onChange={() => update("disabilitySpecify", "Please specify")} className="w-4 h-4 text-blue-600" />
+                <span>{t("please_specify")}</span>
+              </label>
+              {data.disabilitySpecify === "Please specify" && (
+                <input className="fse-input ml-6 max-w-xs" value={data.disabilityDetail}
+                  onChange={e => update("disabilityDetail", e.target.value)} />
+              )}
+            </div>
+          )}
         </Field>
 
         <Field label={t("dietary_q")}>
@@ -592,6 +634,14 @@ function StepACMDemographics({ data, update, toggle }: Props) {
       <p className="text-sm text-slate-600 mb-6">{t("acm_desc")}</p>
       <div className="space-y-6">
         <Field label={t("uk_eea_q")} required>
+          <p className="text-xs text-slate-600 mb-2">
+            {t("uk_eea_link")}{" "}
+            <a href="https://www.government.nl/topics/european-union/eu-eea-efta-and-schengen-area-countries"
+              target="_blank" rel="noopener noreferrer"
+              className="text-blue-600 underline break-all">
+              government.nl/topics/european-union/eu-eea-efta-and-schengen-area-countries
+            </a>
+          </p>
           <div className="space-y-2">
             {yn.map(o => (
               <label key={o.v} className="flex items-center gap-2 cursor-pointer">
@@ -601,6 +651,22 @@ function StepACMDemographics({ data, update, toggle }: Props) {
               </label>
             ))}
           </div>
+          {data.ukEea === "Yes" && (
+            <div className="ml-6 mt-3 border-l-2 border-blue-200 pl-4 space-y-3">
+              <p className="text-sm font-medium fse-required">{t("uk_eea_consent_q")}</p>
+              {[
+                { v: "consent_full", k: "uk_eea_consent_1" as const },
+                { v: "consent_partial", k: "uk_eea_consent_2" as const },
+                { v: "consent_none", k: "uk_eea_consent_3" as const },
+              ].map(o => (
+                <label key={o.v} className="flex items-start gap-2 cursor-pointer">
+                  <input type="radio" name="ukEeaConsent" checked={data.ukEeaConsent === o.v}
+                    onChange={() => update("ukEeaConsent", o.v)} className="w-4 h-4 mt-0.5 text-blue-600" />
+                  <span className="text-sm">{t(o.k)}</span>
+                </label>
+              ))}
+            </div>
+          )}
         </Field>
 
         <Field label={t("gender_id_q")} required>
@@ -679,7 +745,7 @@ function StepACMDemographics({ data, update, toggle }: Props) {
           )}
         </Field>
 
-        <Field label={t("disability_q2")} required>
+        <Field label={t("disability_select_q")} required>
           <div className="space-y-2">
             {[{ v: "I do not have a disability or impairment", k: "no_disability" as const }, { v: "Prefer not to disclose", k: "prefer_not" as const }, { v: "Make your selections", k: "make_selections" as const }].map(o => (
               <label key={o.v} className="flex items-center gap-2 cursor-pointer">
@@ -689,6 +755,30 @@ function StepACMDemographics({ data, update, toggle }: Props) {
               </label>
             ))}
           </div>
+          {data.acmDisability === "Make your selections" && (
+            <div className="ml-6 mt-3 border-l-2 border-blue-200 pl-4 space-y-2">
+              <p className="text-sm font-medium fse-required">{t("select_all")}</p>
+              {([
+                { v: "Deaf/deaf or have serious difficulty hearing", k: "disab_deaf" },
+                { v: "Blind or have serious difficulty seeing, even when wearing glasses", k: "disab_blind" },
+                { v: "Mobility limitation including serious difficulty walking or climbing stairs", k: "disab_mobility" },
+                { v: "Motor limitation including manual dexterity", k: "disab_motor" },
+                { v: "Learning disability", k: "disab_learning" },
+                { v: "Neurodiverse", k: "disab_neuro" },
+                { v: "Speech or language impairment", k: "disab_speech" },
+                { v: "Chronic illness that is neurological, physical, or a mental health diagnosis", k: "disab_chronic" },
+                { v: "Temporary impairment", k: "disab_temp" },
+                { v: "Other type of disability", k: "disab_other_type" },
+              ] as const).map(o => (
+                <label key={o.v} className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={data.acmDisabilityDetails.includes(o.v)}
+                    onChange={() => toggle?.("acmDisabilityDetails", o.v)}
+                    className="w-4 h-4 mt-0.5 text-blue-600" />
+                  <span className="text-sm">{t(o.k)}</span>
+                </label>
+              ))}
+            </div>
+          )}
         </Field>
 
         <Field label={t("live_q")} required>
@@ -763,6 +853,18 @@ function StepItems({ data, update }: Props) {
               </label>
             ))}
           </div>
+          {data.paperAuthor === "Yes" && (
+            <div className="ml-6 mt-3 border-l-2 border-blue-200 pl-4 space-y-4">
+              <Field label={t("paper_track_label")} required>
+                <p className="text-xs text-slate-600 mb-2 italic">{t("paper_track_help")}</p>
+                <input className="fse-input" value={data.fseTrack} onChange={e => update("fseTrack", e.target.value)} />
+              </Field>
+              <Field label={t("paper_id_label")} required>
+                <p className="text-xs text-slate-600 mb-2 italic">{t("paper_id_help")}</p>
+                <input className="fse-input" value={data.paperId} onChange={e => update("paperId", e.target.value)} />
+              </Field>
+            </div>
+          )}
         </Field>
 
         <Field label={t("rerouted_q")}>
@@ -775,6 +877,23 @@ function StepItems({ data, update }: Props) {
               </label>
             ))}
           </div>
+          {data.reroutedPresentations === "Yes" && (
+            <div className="ml-6 mt-3 border-l-2 border-blue-200 pl-4 space-y-4">
+              <Field label={t("paper_title_label")} required>
+                <input className="fse-input" value={data.paperTitle}
+                  onChange={e => update("paperTitle", e.target.value)} />
+              </Field>
+              <Field label={t("paper_authors_label")} required>
+                <input className="fse-input" value={data.paperAuthors}
+                  onChange={e => update("paperAuthors", e.target.value)} />
+              </Field>
+              <Field label={t("paper_url_label")} required>
+                <input type="url" className="fse-input" value={data.paperOriginalUrl}
+                  onChange={e => update("paperOriginalUrl", e.target.value)}
+                  placeholder="https://..." />
+              </Field>
+            </div>
+          )}
         </Field>
       </div>
     </div>
