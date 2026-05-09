@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Registration {
+  id                       String   @id @default(cuid())
+  createdAt                DateTime @default(now())
+
+  // Personal Information
+  firstName                String
+  lastName                 String
+  email                    String
+  registrationType         String
+
+  // Address
+  address1                 String
+  address2                 String?
+  country                  String
+  city                     String
+  state                    String
+  zipCode                  String
+  gender                   String?
+  genderOther              String?
+  region                   String?
+
+  // Certificate / VAT
+  certificateOfAttendance  Boolean  @default(false)
+  vatNumber                String?
+
+  // Registration Questions
+  studentProofFileName     String?
+  hasDisability            String?
+  dietaryRestrictions      String?
+
+  // Sponsors & Communications
+  cvOptIn                  String?
+  cvFileName               String?
+  visaSupportLetter        String?
+  postalMailOptOut         Boolean  @default(false)
+  emailOptOut              String?
+  virtualConsent           Boolean  @default(false)
+
+  // ACM Demographics
+  ukEea                    String?
+  genderIdentity           String?
+  birthYear                String?
+  ethnicOrigin             String?
+  ethnicOriginDetails      String?
+  race                     String?
+  raceDetails              String?
+  acmDisability            String?
+  currentCountry           String?
+
+  // Registration Items
+  mainItem                 String?
+  banquet                  String?
+  mentoringSymposium       String?
+  paperAuthor              String?
+  reroutedPresentations    String?
+
+  // Add-ons
+  addOns                   String?
+
+  // Co-located events
+  oneDayEvent              String?
+  coLocatedConference      String?
+
+  // Total
+  totalAmount              Float    @default(0)
+}

@@ -2,25 +2,49 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+  --fse-blue: #2563eb;
+  --fse-blue-dark: #1d4ed8;
+  --fse-blue-light: #dbeafe;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-fse: var(--fse-blue);
+  --color-fse-dark: var(--fse-blue-dark);
+  --color-fse-light: var(--fse-blue-light);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: #f8fafc;
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.fse-input {
+  @apply w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition;
+}
+
+.fse-label {
+  @apply block text-sm font-medium text-slate-700 mb-1.5;
+}
+
+.fse-required::after {
+  content: " *";
+  color: #dc2626;
+}
+
+.fse-btn-primary {
+  @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.fse-btn-secondary {
+  @apply inline-flex items-center justify-center px-6 py-2.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium border border-slate-300 transition;
+}
+
+.fse-card {
+  @apply bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8;
 }

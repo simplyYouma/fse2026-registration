@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FSE 2026 — Registration Form
 
-## Getting Started
+Formulaire d'inscription pour la conférence ESEC/FSE '26 (Montréal, 5-9 juillet 2026).
 
-First, run the development server:
+## Stack
+
+- Next.js 15 (App Router) + TypeScript
+- Tailwind CSS v4
+- Prisma 7 + SQLite (local) / Postgres (prod recommandé)
+- Basic Auth pour l'admin
+
+## Démarrage local
 
 ```bash
+npm install
+npx prisma migrate dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Formulaire : http://localhost:3000
+- Admin : http://localhost:3000/admin (login : `admin` / `fse2026`)
+- Export CSV : http://localhost:3000/api/admin/export
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Déploiement Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> **Important** : SQLite ne fonctionne pas sur Vercel (filesystem readonly). Pour la prod il faut basculer sur **Postgres** (Vercel Postgres / Neon — gratuit) ou **Turso** (libSQL).
 
-## Learn More
+### Option recommandée : Vercel Postgres (Neon)
 
-To learn more about Next.js, take a look at the following resources:
+1. Push le projet sur GitHub.
+2. Sur Vercel → **New Project** → importer le repo.
+3. Onglet **Storage** → **Create Database** → **Neon Postgres**.
+4. Vercel crée automatiquement la variable `DATABASE_URL`.
+5. Modifier `prisma/schema.prisma` :
+   ```prisma
+   datasource db { provider = "postgresql" }
+   ```
+6. Installer l'adapter Postgres :
+   ```bash
+   npm uninstall @prisma/adapter-better-sqlite3 better-sqlite3
+   npm install @prisma/adapter-pg pg
+   ```
+7. Modifier `lib/prisma.ts` :
+   ```ts
+   import { PrismaPg } from "@prisma/adapter-pg";
+   const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+   ```
+8. Variables d'env Vercel :
+   - `ADMIN_USER` = ton user
+   - `ADMIN_PASSWORD` = mot de passe fort
+9. Ajoute la migration au build dans `package.json` :
+   ```json
+   "scripts": { "build": "prisma migrate deploy && next build" }
+   ```
+10. Déployer.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Variables d'environnement
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Connexion DB (sqlite local ou Postgres prod) |
+| `ADMIN_USER` | Identifiant admin (défaut: `admin`) |
+| `ADMIN_PASSWORD` | Mot de passe admin (défaut: `fse2026` — **change en prod !**) |
 
-## Deploy on Vercel
+## Routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Route | Description |
+|---|---|
+| `/` | Formulaire d'inscription public (8 étapes) |
+| `/admin` | Dashboard protégé (Basic Auth) |
+| `/api/register` | POST — soumet une inscription |
+| `/api/admin/export` | GET — télécharge toutes les inscriptions en CSV |
