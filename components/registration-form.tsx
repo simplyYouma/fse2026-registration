@@ -159,38 +159,31 @@ export default function RegistrationForm() {
 
   if (!started) {
     return (
-      <div className="max-w-3xl mx-auto">
-        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 text-white shadow-2xl">
-          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 20% 20%, white 0%, transparent 40%), radial-gradient(circle at 80% 80%, white 0%, transparent 40%)" }} />
-          <div className="relative p-6 sm:p-10 md:p-14 text-center">
-            <div className="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur text-xs sm:text-sm font-medium mb-4 sm:mb-6">
-              ✨ Registration is now open
-            </div>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-3 sm:mb-4 tracking-tight">
-              FSE 2026
-            </h1>
-            <p className="text-base sm:text-xl text-blue-50 mb-2 max-w-2xl mx-auto">
-              ESEC/FSE &apos;26 — 34th ACM Joint European Software Engineering Conference
-            </p>
-            <p className="text-sm sm:text-base text-blue-100 mb-6 sm:mb-8">
-              📅 Sun 5 – Thu 9 July 2026  ·  📍 Montreal, Canada
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 max-w-2xl mx-auto text-left">
-              <Feature icon="📝" title="8 quick steps" desc="~5 min to complete" />
-              <Feature icon="🔒" title="Secure" desc="Your data is protected" />
-              <Feature icon="📧" title="Confirmation" desc="Email sent instantly" />
-            </div>
-            <button
-              type="button"
-              onClick={() => setStarted(true)}
-              className="inline-flex items-center justify-center gap-2 px-7 sm:px-10 py-3 sm:py-4 rounded-xl bg-white text-blue-700 font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
-            >
-              Start Registration <span className="text-xl">→</span>
-            </button>
-            <p className="text-xs text-blue-100 mt-4 sm:mt-6 opacity-80">
-              By starting you agree to ACM&apos;s privacy policy.
-            </p>
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-14 md:p-16 text-center">
+          <div className="inline-block text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold mb-6">
+            Registration · Open
           </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
+            FSE <span className="text-blue-600">2026</span>
+          </h1>
+          <div className="w-12 h-px bg-slate-200 mx-auto my-6" />
+          <p className="text-base sm:text-lg text-slate-600 mb-2 max-w-md mx-auto leading-relaxed">
+            34th ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering
+          </p>
+          <p className="text-sm text-slate-500 mb-10">
+            Sun 5 – Thu 9 July 2026  ·  Montreal, Canada
+          </p>
+          <button
+            type="button"
+            onClick={() => setStarted(true)}
+            className="inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3 sm:py-3.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition-colors"
+          >
+            Begin registration
+          </button>
+          <p className="text-xs text-slate-400 mt-6">
+            Takes about 5 minutes · 8 short steps
+          </p>
         </div>
       </div>
     );
@@ -262,16 +255,6 @@ export default function RegistrationForm() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Feature({ icon, title, desc }: { icon: string; title: string; desc: string }) {
-  return (
-    <div className="bg-white/10 backdrop-blur rounded-xl p-3 sm:p-4 border border-white/20">
-      <div className="text-xl sm:text-2xl mb-1">{icon}</div>
-      <div className="font-semibold text-sm sm:text-base">{title}</div>
-      <div className="text-xs sm:text-sm text-blue-100">{desc}</div>
     </div>
   );
 }
