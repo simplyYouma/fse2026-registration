@@ -65,6 +65,7 @@ const STEPS = [
 ];
 
 export default function RegistrationForm() {
+  const [started, setStarted] = useState(false);
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormState>(initialState);
   const [submitting, setSubmitting] = useState(false);
@@ -145,43 +146,74 @@ export default function RegistrationForm() {
   if (success) {
     return (
       <div className="fse-card text-center max-w-2xl mx-auto">
-        <div className="w-16 h-16 mx-auto rounded-full bg-blue-100 flex items-center justify-center mb-4">
-          <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+        <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mb-4 shadow-lg">
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
         </div>
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Registration Submitted!</h2>
         <p className="text-slate-600 mb-1">Thank you for registering for ESEC/FSE &apos;26.</p>
-        <p className="text-sm text-slate-500 mb-6">Confirmation ID: <span className="font-mono">{success.id}</span></p>
+        <p className="text-sm text-slate-500 mb-6 break-all">Confirmation ID: <span className="font-mono">{success.id}</span></p>
         <p className="text-slate-600">A confirmation email will be sent to <span className="font-medium">{data.email}</span>.</p>
+      </div>
+    );
+  }
+
+  if (!started) {
+    return (
+      <div className="max-w-3xl mx-auto">
+        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 text-white shadow-2xl">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 20% 20%, white 0%, transparent 40%), radial-gradient(circle at 80% 80%, white 0%, transparent 40%)" }} />
+          <div className="relative p-6 sm:p-10 md:p-14 text-center">
+            <div className="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+              ✨ Registration is now open
+            </div>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-3 sm:mb-4 tracking-tight">
+              FSE 2026
+            </h1>
+            <p className="text-base sm:text-xl text-blue-50 mb-2 max-w-2xl mx-auto">
+              ESEC/FSE &apos;26 — 34th ACM Joint European Software Engineering Conference
+            </p>
+            <p className="text-sm sm:text-base text-blue-100 mb-6 sm:mb-8">
+              📅 Sun 5 – Thu 9 July 2026  ·  📍 Montreal, Canada
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 max-w-2xl mx-auto text-left">
+              <Feature icon="📝" title="8 quick steps" desc="~5 min to complete" />
+              <Feature icon="🔒" title="Secure" desc="Your data is protected" />
+              <Feature icon="📧" title="Confirmation" desc="Email sent instantly" />
+            </div>
+            <button
+              type="button"
+              onClick={() => setStarted(true)}
+              className="inline-flex items-center justify-center gap-2 px-7 sm:px-10 py-3 sm:py-4 rounded-xl bg-white text-blue-700 font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
+            >
+              Start Registration <span className="text-xl">→</span>
+            </button>
+            <p className="text-xs text-blue-100 mt-4 sm:mt-6 opacity-80">
+              By starting you agree to ACM&apos;s privacy policy.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Banner */}
-      <div className="bg-blue-600 text-white rounded-2xl p-6 md:p-8 mb-6 shadow-lg">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <div className="text-3xl font-bold mb-1">FSE 2026</div>
-            <div className="text-blue-100 text-sm">ESEC/FSE &apos;26: 34th ACM Joint European Software Engineering Conference</div>
+      {/* Banner with gradient */}
+      <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-700 text-white p-5 sm:p-6 md:p-8 mb-5 md:mb-6 shadow-lg">
+        <div className="relative flex items-start sm:items-center justify-between flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="min-w-0">
+            <div className="text-2xl sm:text-3xl font-bold mb-1">FSE 2026</div>
+            <div className="text-blue-100 text-xs sm:text-sm leading-snug">ESEC/FSE &apos;26: 34th ACM Joint European Software Engineering Conference</div>
           </div>
-          <div className="text-right text-sm">
+          <div className="text-left sm:text-right text-xs sm:text-sm flex-shrink-0">
             <div className="font-semibold">Sun 5 – Thu 9 July 2026</div>
             <div className="text-blue-100">Montreal, Canada</div>
           </div>
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-700">Step {step + 1} of {STEPS.length}: <span className="text-blue-600">{STEPS[step]}</span></span>
-          <span className="text-sm text-slate-500">{Math.round(((step + 1) / STEPS.length) * 100)}%</span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-          <div className="bg-blue-600 h-full transition-all duration-300" style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} />
-        </div>
-      </div>
+      {/* Modern Stepper */}
+      <Stepper step={step} total={STEPS.length} label={STEPS[step]} />
 
       <div className="fse-card">
         {step === 0 && <StepPersonal data={data} update={update} errors={errors} />}
@@ -193,36 +225,105 @@ export default function RegistrationForm() {
         {step === 6 && <StepAddOns data={data} update={update} toggle={toggle} />}
         {step === 7 && <StepReview data={data} total={total} />}
 
-        <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-200">
-          <button
-            type="button"
-            onClick={() => { setErrors({}); setStep(s => Math.max(0, s - 1)); }}
-            disabled={step === 0}
-            className="fse-btn-secondary"
-          >
-            ← Previous
-          </button>
-          <div className="text-sm text-slate-600">
+        <div className="mt-8 pt-6 border-t border-slate-200">
+          <div className="text-center text-sm text-slate-600 mb-4 sm:hidden">
             Total: <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
           </div>
-          {step < STEPS.length - 1 ? (
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
             <button
               type="button"
-              onClick={() => { if (validateStep()) setStep(s => s + 1); }}
-              className="fse-btn-primary"
+              onClick={() => { setErrors({}); setStep(s => Math.max(0, s - 1)); }}
+              disabled={step === 0}
+              className="fse-btn-secondary flex-1 sm:flex-none"
             >
-              Next →
+              ← <span className="hidden sm:inline">Previous</span>
             </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={submitting}
-              className="fse-btn-primary"
-            >
-              {submitting ? "Submitting..." : "Submit Registration"}
-            </button>
-          )}
+            <div className="hidden sm:block text-sm text-slate-600">
+              Total: <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
+            </div>
+            {step < STEPS.length - 1 ? (
+              <button
+                type="button"
+                onClick={() => { if (validateStep()) setStep(s => s + 1); }}
+                className="fse-btn-primary flex-1 sm:flex-none"
+              >
+                Next →
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={submitting}
+                className="fse-btn-primary flex-1 sm:flex-none"
+              >
+                {submitting ? "Submitting..." : "Submit"}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Feature({ icon, title, desc }: { icon: string; title: string; desc: string }) {
+  return (
+    <div className="bg-white/10 backdrop-blur rounded-xl p-3 sm:p-4 border border-white/20">
+      <div className="text-xl sm:text-2xl mb-1">{icon}</div>
+      <div className="font-semibold text-sm sm:text-base">{title}</div>
+      <div className="text-xs sm:text-sm text-blue-100">{desc}</div>
+    </div>
+  );
+}
+
+function Stepper({ step, total, label }: { step: number; total: number; label: string }) {
+  const pct = ((step + 1) / total) * 100;
+  return (
+    <div className="mb-5 md:mb-6">
+      {/* Mobile: progress bar + label */}
+      <div className="sm:hidden">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-semibold text-slate-700">
+            Step {step + 1}/{total}
+          </span>
+          <span className="text-sm text-blue-600 font-medium truncate ml-2">{label}</span>
+        </div>
+        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500"
+            style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+
+      {/* Desktop: numbered circles */}
+      <div className="hidden sm:block">
+        <div className="flex items-center">
+          {Array.from({ length: total }).map((_, i) => {
+            const done = i < step;
+            const active = i === step;
+            return (
+              <div key={i} className="flex items-center flex-1 last:flex-none">
+                <div className={`relative flex items-center justify-center w-9 h-9 rounded-full font-semibold text-sm transition-all
+                  ${done ? "bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md"
+                    : active ? "bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg ring-4 ring-blue-100 scale-110"
+                    : "bg-white border-2 border-slate-300 text-slate-400"}`}>
+                  {done ? (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : i + 1}
+                </div>
+                {i < total - 1 && (
+                  <div className="flex-1 h-0.5 mx-1 lg:mx-2 rounded">
+                    <div className={`h-full rounded transition-all duration-500 ${i < step ? "bg-gradient-to-r from-blue-500 to-blue-600" : "bg-slate-200"}`} />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-3 text-center">
+          <span className="text-xs uppercase tracking-wider text-slate-500 font-medium">Step {step + 1} of {total}</span>
+          <div className="text-base font-bold text-slate-900 mt-0.5">{label}</div>
         </div>
       </div>
     </div>
