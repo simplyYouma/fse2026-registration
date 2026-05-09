@@ -1,35 +1,28 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLang, LangSwitch } from "@/lib/lang-context";
 import {
-  REGISTRATION_TYPES, COUNTRIES, REGIONS, DIETARY_OPTIONS, BIRTH_YEAR_OPTIONS,
-  ETHNIC_ORIGIN_OPTIONS, RACE_OPTIONS, REGISTRATION_ITEMS, ADD_ONS,
+  REGISTRATION_TYPES, COUNTRIES, REGISTRATION_ITEMS, ADD_ONS,
   ONE_DAY_EVENTS, CO_LOCATED_CONFERENCES,
 } from "@/lib/form-options";
 
 type FormState = {
-  // step 1
   firstName: string; lastName: string; email: string; registrationType: string;
-  // step 2
   address1: string; address2: string; country: string; city: string;
   state: string; zipCode: string;
   gender: string; genderOther: string; region: string;
   certificateOfAttendance: boolean; vatNumber: string;
-  // step 3
   studentProofFileName: string; hasDisability: string;
   dietaryRestrictions: string[];
-  // step 4
   cvOptIn: string; cvFileName: string; visaSupportLetter: string;
   postalMailOptOut: boolean; emailOptOut: string; virtualConsent: boolean;
-  // step 5
   ukEea: string; genderIdentity: string; birthYear: string;
   ethnicOrigin: string; ethnicOriginDetails: string[];
   race: string; raceDetails: string[];
   acmDisability: string; currentCountry: string;
-  // step 6
   mainItem: string; banquet: string; mentoringSymposium: string;
   paperAuthor: string; reroutedPresentations: string;
-  // step 7
   addOns: string[];
   oneDayEvent: string[]; coLocatedConference: string[];
 };
@@ -53,18 +46,13 @@ const initialState: FormState = {
   oneDayEvent: [], coLocatedConference: [],
 };
 
-const STEPS = [
-  "Personal",
-  "Address",
-  "Registration Questions",
-  "Sponsors & Communications",
-  "ACM Demographics",
-  "Registration Items",
-  "Add-Ons & Co-located",
-  "Review",
-];
+const STEP_KEYS = [
+  "step_personal", "step_address", "step_questions", "step_sponsors",
+  "step_acm", "step_items", "step_addons", "step_review",
+] as const;
 
 export default function RegistrationForm() {
+  const { t } = useLang();
   const [started, setStarted] = useState(false);
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormState>(initialState);
@@ -98,17 +86,17 @@ export default function RegistrationForm() {
   function validateStep(): boolean {
     const e: Record<string, string> = {};
     if (step === 0) {
-      if (!data.firstName.trim()) e.firstName = "Required";
-      if (!data.lastName.trim()) e.lastName = "Required";
-      if (!data.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) e.email = "Valid email required";
-      if (!data.registrationType) e.registrationType = "Required";
+      if (!data.firstName.trim()) e.firstName = t("err_required");
+      if (!data.lastName.trim()) e.lastName = t("err_required");
+      if (!data.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) e.email = t("err_email");
+      if (!data.registrationType) e.registrationType = t("err_required");
     }
     if (step === 1) {
-      if (!data.address1.trim()) e.address1 = "Required";
-      if (!data.country) e.country = "Required";
-      if (!data.city.trim()) e.city = "Required";
-      if (!data.state.trim()) e.state = "Required";
-      if (!data.zipCode.trim()) e.zipCode = "Required";
+      if (!data.address1.trim()) e.address1 = t("err_required");
+      if (!data.country) e.country = t("err_required");
+      if (!data.city.trim()) e.city = t("err_required");
+      if (!data.state.trim()) e.state = t("err_required");
+      if (!data.zipCode.trim()) e.zipCode = t("err_required");
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -149,10 +137,10 @@ export default function RegistrationForm() {
         <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mb-4 shadow-lg">
           <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Registration Submitted!</h2>
-        <p className="text-slate-600 mb-1">Thank you for registering for ESEC/FSE &apos;26.</p>
-        <p className="text-sm text-slate-500 mb-6 break-all">Confirmation ID: <span className="font-mono">{success.id}</span></p>
-        <p className="text-slate-600">A confirmation email will be sent to <span className="font-medium">{data.email}</span>.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">{t("success_title")}</h2>
+        <p className="text-slate-600 mb-1">{t("success_thanks")}</p>
+        <p className="text-sm text-slate-500 mb-6 break-all">{t("success_id")} <span className="font-mono">{success.id}</span></p>
+        <p className="text-slate-600">{t("success_email")} <span className="font-medium">{data.email}</span>.</p>
       </div>
     );
   }
@@ -160,29 +148,32 @@ export default function RegistrationForm() {
   if (!started) {
     return (
       <div className="max-w-2xl mx-auto">
+        <div className="flex justify-end mb-3">
+          <LangSwitch />
+        </div>
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-14 md:p-16 text-center">
           <div className="inline-block text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold mb-6">
-            Registration · Open
+            {t("splash_label")}
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-4 tracking-tight">
             FSE <span className="text-blue-600">2026</span>
           </h1>
           <div className="w-12 h-px bg-slate-200 mx-auto my-6" />
           <p className="text-base sm:text-lg text-slate-600 mb-2 max-w-md mx-auto leading-relaxed">
-            34th ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering
+            {t("splash_subtitle")}
           </p>
           <p className="text-sm text-slate-500 mb-10">
-            Sun 5 – Thu 9 July 2026  ·  Montreal, Canada
+            {t("splash_dates")}
           </p>
           <button
             type="button"
             onClick={() => setStarted(true)}
             className="inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3 sm:py-3.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition-colors"
           >
-            Begin registration
+            {t("splash_cta")}
           </button>
           <p className="text-xs text-slate-400 mt-6">
-            Takes about 5 minutes · 8 short steps
+            {t("splash_hint")}
           </p>
         </div>
       </div>
@@ -191,22 +182,24 @@ export default function RegistrationForm() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Banner with gradient */}
+      <div className="flex justify-end mb-3">
+        <LangSwitch />
+      </div>
+
       <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-700 text-white p-5 sm:p-6 md:p-8 mb-5 md:mb-6 shadow-lg">
         <div className="relative flex items-start sm:items-center justify-between flex-col sm:flex-row gap-3 sm:gap-4">
           <div className="min-w-0">
             <div className="text-2xl sm:text-3xl font-bold mb-1">FSE 2026</div>
-            <div className="text-blue-100 text-xs sm:text-sm leading-snug">ESEC/FSE &apos;26: 34th ACM Joint European Software Engineering Conference</div>
+            <div className="text-blue-100 text-xs sm:text-sm leading-snug">{t("banner_subtitle")}</div>
           </div>
           <div className="text-left sm:text-right text-xs sm:text-sm flex-shrink-0">
-            <div className="font-semibold">Sun 5 – Thu 9 July 2026</div>
-            <div className="text-blue-100">Montreal, Canada</div>
+            <div className="font-semibold">{t("banner_dates")}</div>
+            <div className="text-blue-100">{t("banner_location")}</div>
           </div>
         </div>
       </div>
 
-      {/* Modern Stepper */}
-      <Stepper step={step} total={STEPS.length} label={STEPS[step]} />
+      <Stepper step={step} total={STEP_KEYS.length} label={t(STEP_KEYS[step])} />
 
       <div className="fse-card">
         {step === 0 && <StepPersonal data={data} update={update} errors={errors} />}
@@ -220,7 +213,7 @@ export default function RegistrationForm() {
 
         <div className="mt-8 pt-6 border-t border-slate-200">
           <div className="text-center text-sm text-slate-600 mb-4 sm:hidden">
-            Total: <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
+            {t("total")}: <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
           </div>
           <div className="flex items-center justify-between gap-2 sm:gap-4">
             <button
@@ -229,18 +222,18 @@ export default function RegistrationForm() {
               disabled={step === 0}
               className="fse-btn-secondary flex-1 sm:flex-none"
             >
-              ← <span className="hidden sm:inline">Previous</span>
+              ← <span className="hidden sm:inline">{t("previous")}</span>
             </button>
             <div className="hidden sm:block text-sm text-slate-600">
-              Total: <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
+              {t("total")}: <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
             </div>
-            {step < STEPS.length - 1 ? (
+            {step < STEP_KEYS.length - 1 ? (
               <button
                 type="button"
                 onClick={() => { if (validateStep()) setStep(s => s + 1); }}
                 className="fse-btn-primary flex-1 sm:flex-none"
               >
-                Next →
+                {t("next")} →
               </button>
             ) : (
               <button
@@ -249,7 +242,7 @@ export default function RegistrationForm() {
                 disabled={submitting}
                 className="fse-btn-primary flex-1 sm:flex-none"
               >
-                {submitting ? "Submitting..." : "Submit"}
+                {submitting ? t("submitting") : t("submit")}
               </button>
             )}
           </div>
@@ -260,14 +253,14 @@ export default function RegistrationForm() {
 }
 
 function Stepper({ step, total, label }: { step: number; total: number; label: string }) {
+  const { t } = useLang();
   const pct = ((step + 1) / total) * 100;
   return (
     <div className="mb-5 md:mb-6">
-      {/* Mobile: progress bar + label */}
       <div className="sm:hidden">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-slate-700">
-            Step {step + 1}/{total}
+            {t("step_of_short")} {step + 1}/{total}
           </span>
           <span className="text-sm text-blue-600 font-medium truncate ml-2">{label}</span>
         </div>
@@ -277,7 +270,6 @@ function Stepper({ step, total, label }: { step: number; total: number; label: s
         </div>
       </div>
 
-      {/* Desktop: numbered circles */}
       <div className="hidden sm:block">
         <div className="flex items-center">
           {Array.from({ length: total }).map((_, i) => {
@@ -305,7 +297,7 @@ function Stepper({ step, total, label }: { step: number; total: number; label: s
           })}
         </div>
         <div className="mt-3 text-center">
-          <span className="text-xs uppercase tracking-wider text-slate-500 font-medium">Step {step + 1} of {total}</span>
+          <span className="text-xs uppercase tracking-wider text-slate-500 font-medium">{t("step_of")} {step + 1} {t("step_of_sep")} {total}</span>
           <div className="text-base font-bold text-slate-900 mt-0.5">{label}</div>
         </div>
       </div>
@@ -313,7 +305,12 @@ function Stepper({ step, total, label }: { step: number; total: number; label: s
   );
 }
 
-type Props = { data: FormState; update: <K extends keyof FormState>(k: K, v: FormState[K]) => void; errors?: Record<string, string>; toggle?: (k: keyof FormState, v: string) => void };
+type Props = {
+  data: FormState;
+  update: <K extends keyof FormState>(k: K, v: FormState[K]) => void;
+  errors?: Record<string, string>;
+  toggle?: (k: keyof FormState, v: string) => void;
+};
 
 function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
@@ -326,24 +323,25 @@ function Field({ label, required, error, children }: { label: string; required?:
 }
 
 function StepPersonal({ data, update, errors }: Props) {
+  const { t } = useLang();
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-600 text-center mb-1">Personal Information</h2>
-      <p className="text-slate-600 text-center mb-6">Fill out the information below, then click Next to continue.</p>
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-1">{t("personal_title")}</h2>
+      <p className="text-slate-600 text-center mb-6">{t("personal_desc")}</p>
       <div className="grid md:grid-cols-2 gap-4">
-        <Field label="First name" required error={errors?.firstName}>
+        <Field label={t("first_name")} required error={errors?.firstName}>
           <input className="fse-input" value={data.firstName} onChange={e => update("firstName", e.target.value)} />
         </Field>
-        <Field label="Last name" required error={errors?.lastName}>
+        <Field label={t("last_name")} required error={errors?.lastName}>
           <input className="fse-input" value={data.lastName} onChange={e => update("lastName", e.target.value)} />
         </Field>
-        <Field label="Email address" required error={errors?.email}>
+        <Field label={t("email")} required error={errors?.email}>
           <input type="email" className="fse-input" value={data.email} onChange={e => update("email", e.target.value)} />
         </Field>
-        <Field label="Registration Type" required error={errors?.registrationType}>
+        <Field label={t("registration_type")} required error={errors?.registrationType}>
           <select className="fse-input" value={data.registrationType} onChange={e => update("registrationType", e.target.value)}>
-            <option value="">Select…</option>
-            {REGISTRATION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+            <option value="">{t("select")}</option>
+            {REGISTRATION_TYPES.map(x => <option key={x} value={x}>{x}</option>)}
           </select>
         </Field>
       </div>
@@ -352,68 +350,77 @@ function StepPersonal({ data, update, errors }: Props) {
 }
 
 function StepAddress({ data, update, errors }: Props) {
+  const { t } = useLang();
+  const regions: { v: string; k: "region_africa"|"region_asia"|"region_europe"|"region_namerica"|"region_oceania"|"region_samerica" }[] = [
+    { v: "Africa", k: "region_africa" }, { v: "Asia", k: "region_asia" },
+    { v: "Europe", k: "region_europe" }, { v: "North America", k: "region_namerica" },
+    { v: "Oceania", k: "region_oceania" }, { v: "South America", k: "region_samerica" },
+  ];
+  const genders: { v: string; k: "gender_male"|"gender_female"|"gender_other" }[] = [
+    { v: "Male", k: "gender_male" }, { v: "Female", k: "gender_female" }, { v: "Other", k: "gender_other" },
+  ];
   return (
     <div>
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Address</h2>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6">{t("address_title")}</h2>
       <div className="space-y-4">
-        <Field label="Address 1" required error={errors?.address1}>
+        <Field label={t("address1")} required error={errors?.address1}>
           <input className="fse-input" value={data.address1} onChange={e => update("address1", e.target.value)} />
         </Field>
-        <Field label="Address 2">
+        <Field label={t("address2")}>
           <input className="fse-input" value={data.address2} onChange={e => update("address2", e.target.value)} />
         </Field>
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="Country/Region" required error={errors?.country}>
+          <Field label={t("country")} required error={errors?.country}>
             <select className="fse-input" value={data.country} onChange={e => update("country", e.target.value)}>
-              <option value="">Select…</option>
+              <option value="">{t("select")}</option>
               {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </Field>
-          <Field label="City" required error={errors?.city}>
+          <Field label={t("city")} required error={errors?.city}>
             <input className="fse-input" value={data.city} onChange={e => update("city", e.target.value)} />
           </Field>
-          <Field label="State/Province" required error={errors?.state}>
+          <Field label={t("state")} required error={errors?.state}>
             <input className="fse-input" value={data.state} onChange={e => update("state", e.target.value)} />
           </Field>
-          <Field label="ZIP/Postal code" required error={errors?.zipCode}>
+          <Field label={t("zip")} required error={errors?.zipCode}>
             <input className="fse-input" value={data.zipCode} onChange={e => update("zipCode", e.target.value)} />
           </Field>
         </div>
 
-        <Field label="What is your gender?">
+        <Field label={t("gender_q")}>
           <div className="space-y-2">
-            {["Male", "Female", "Other"].map(g => (
-              <label key={g} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="gender" checked={data.gender === g} onChange={() => update("gender", g)} className="w-4 h-4 text-blue-600" />
-                <span>{g}</span>
+            {genders.map(g => (
+              <label key={g.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="gender" checked={data.gender === g.v} onChange={() => update("gender", g.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(g.k)}</span>
               </label>
             ))}
             {data.gender === "Other" && (
-              <input className="fse-input mt-2" placeholder="Please specify"
+              <input className="fse-input mt-2" placeholder={t("gender_specify")}
                 value={data.genderOther} onChange={e => update("genderOther", e.target.value)} />
             )}
           </div>
         </Field>
 
-        <Field label="What is your region?">
+        <Field label={t("region_q")}>
           <select className="fse-input" value={data.region} onChange={e => update("region", e.target.value)}>
-            <option value="">Select…</option>
-            {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+            <option value="">{t("select")}</option>
+            {regions.map(r => <option key={r.v} value={r.v}>{t(r.k)}</option>)}
           </select>
         </Field>
 
         <div>
-          <h3 className="font-semibold text-slate-900 mb-2">Certificate of Attendance</h3>
+          <h3 className="font-semibold text-slate-900 mb-2">{t("cert_title")}</h3>
           <label className="flex items-start gap-2 cursor-pointer">
             <input type="checkbox" checked={data.certificateOfAttendance}
               onChange={e => update("certificateOfAttendance", e.target.checked)}
               className="w-4 h-4 mt-0.5 text-blue-600" />
-            <span className="text-sm">Check this box if you would like to receive a certificate of attendance</span>
+            <span className="text-sm">{t("cert_check")}</span>
           </label>
         </div>
 
-        <Field label="Company VAT number (if applicable)">
-          <input className="fse-input" value={data.vatNumber} onChange={e => update("vatNumber", e.target.value)} placeholder="If your company is paying your registration fee and requires a VAT number on the invoice." />
+        <Field label={t("vat_label")}>
+          <input className="fse-input" value={data.vatNumber} onChange={e => update("vatNumber", e.target.value)} placeholder={t("vat_help")} />
         </Field>
       </div>
     </div>
@@ -421,38 +428,48 @@ function StepAddress({ data, update, errors }: Props) {
 }
 
 function StepQuestions({ data, update, toggle }: Props) {
+  const { t } = useLang();
+  const diets: { v: string; k: "diet_none"|"diet_dairy"|"diet_pork"|"diet_vegan"|"diet_gluten"|"diet_nut"|"diet_vegetarian"|"diet_other" }[] = [
+    { v: "None", k: "diet_none" }, { v: "Dairy/Lactose Free", k: "diet_dairy" },
+    { v: "No Pork", k: "diet_pork" }, { v: "Vegan", k: "diet_vegan" },
+    { v: "Gluten Free", k: "diet_gluten" }, { v: "Nut Free", k: "diet_nut" },
+    { v: "Vegetarian", k: "diet_vegetarian" }, { v: "Other", k: "diet_other" },
+  ];
+  const disab: { v: string; k: "yes"|"no"|"prefer_not" }[] = [
+    { v: "Yes", k: "yes" }, { v: "No", k: "no" }, { v: "Prefer not to submit", k: "prefer_not" },
+  ];
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Registration Questions</h2>
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">{t("questions_title")}</h2>
       <div className="space-y-6">
-        <Field label="Students must upload legible proof of student status (e.g. copy of student ID)">
+        <Field label={t("student_proof")}>
           <input type="file" accept=".pdf,image/*"
             onChange={e => update("studentProofFileName", e.target.files?.[0]?.name ?? "")}
             className="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-          {data.studentProofFileName && <p className="text-sm text-slate-600 mt-1">📎 {data.studentProofFileName}</p>}
+          {data.studentProofFileName && <p className="text-sm text-slate-600 mt-1">{data.studentProofFileName}</p>}
         </Field>
 
-        <Field label="Do you have a disability or special need that impacts your access to ACM conferences, special interest groups, publications, or digital resources?">
+        <Field label={t("disability_q")}>
           <div className="space-y-2">
-            {["Yes", "No", "Prefer not to submit"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="hasDisability" checked={data.hasDisability === o}
-                  onChange={() => update("hasDisability", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {disab.map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="hasDisability" checked={data.hasDisability === o.v}
+                  onChange={() => update("hasDisability", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
-        <Field label="Please list any dietary restrictions of which requires our awareness:">
+        <Field label={t("dietary_q")}>
           <div className="grid md:grid-cols-2 gap-2">
-            {DIETARY_OPTIONS.map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
+            {diets.map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox"
-                  checked={data.dietaryRestrictions.includes(o)}
-                  onChange={() => toggle?.("dietaryRestrictions", o)}
+                  checked={data.dietaryRestrictions.includes(o.v)}
+                  onChange={() => toggle?.("dietaryRestrictions", o.v)}
                   className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
@@ -463,18 +480,19 @@ function StepQuestions({ data, update, toggle }: Props) {
 }
 
 function StepSponsors({ data, update }: Props) {
+  const { t } = useLang();
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Sponsors & Communications</h2>
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">{t("sponsors_title")}</h2>
       <div className="space-y-6 text-sm">
         <div>
-          <p className="text-slate-700 mb-2">FSE have sponsors who are interested in recruiting students. If you are interested in job opportunities, would you like to opt-in and submit your CV/resume to our database which we will share with our sponsors?</p>
+          <p className="text-slate-700 mb-2">{t("cv_q")}</p>
           <div className="space-y-2">
-            {["Yes, I would like to be contacted", "No, I choose to opt out"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="cvOptIn" checked={data.cvOptIn === o}
-                  onChange={() => update("cvOptIn", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {[{ v: "Yes, I would like to be contacted", k: "cv_yes" as const }, { v: "No, I choose to opt out", k: "cv_no" as const }].map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="cvOptIn" checked={data.cvOptIn === o.v}
+                  onChange={() => update("cvOptIn", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
@@ -483,55 +501,55 @@ function StepSponsors({ data, update }: Props) {
               <input type="file" accept=".pdf,.doc,.docx"
                 onChange={e => update("cvFileName", e.target.files?.[0]?.name ?? "")}
                 className="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700" />
-              {data.cvFileName && <p className="text-sm text-slate-600 mt-1">📎 {data.cvFileName}</p>}
+              {data.cvFileName && <p className="text-sm text-slate-600 mt-1">{data.cvFileName}</p>}
             </div>
           )}
         </div>
 
-        <Field label="Do you require a Visa Support Letter?">
+        <Field label={t("visa_q")}>
           <div className="space-y-2">
-            {["Yes", "No"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="visa" checked={data.visaSupportLetter === o}
-                  onChange={() => update("visaSupportLetter", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {[{ v: "Yes", k: "yes" as const }, { v: "No", k: "no" as const }].map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="visa" checked={data.visaSupportLetter === o.v}
+                  onChange={() => update("visaSupportLetter", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
         <div>
-          <h3 className="font-semibold text-slate-900 mb-1">Postal Mail Opt-Out</h3>
-          <p className="text-slate-600 mb-2">ACM occasionally makes the conference attendee lists available to companies and other societies for IT related mailings.</p>
+          <h3 className="font-semibold text-slate-900 mb-1">{t("postal_title")}</h3>
+          <p className="text-slate-600 mb-2">{t("postal_desc")}</p>
           <label className="flex items-start gap-2 cursor-pointer">
             <input type="checkbox" checked={data.postalMailOptOut}
               onChange={e => update("postalMailOptOut", e.target.checked)}
               className="w-4 h-4 mt-0.5 text-blue-600" />
-            <span>Please do not release my postal address to third parties</span>
+            <span>{t("postal_check")}</span>
           </label>
         </div>
 
-        <Field label="Email Opt-Out">
-          <p className="text-slate-600 mb-2 text-xs">ACM does not sell, rent or exchange email addresses of its members, conference attendees, etc.</p>
+        <Field label={t("email_optout_title")}>
+          <p className="text-slate-600 mb-2 text-xs">{t("email_optout_desc")}</p>
           <div className="space-y-2">
-            {["Yes, please send me ACM Announcements via email", "No, please do not send me ACM Announcements via email"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="emailOptOut" checked={data.emailOptOut === o}
-                  onChange={() => update("emailOptOut", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {[{ v: "Yes, please send me ACM Announcements via email", k: "email_yes" as const }, { v: "No, please do not send me ACM Announcements via email", k: "email_no" as const }].map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="emailOptOut" checked={data.emailOptOut === o.v}
+                  onChange={() => update("emailOptOut", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
         <div>
-          <h3 className="font-semibold text-slate-900 mb-1">Virtual Conference Consent</h3>
-          <p className="text-slate-600 mb-2 text-xs">Recordings of sessions, chats, questions, and answers may be captured and made available for later viewing.</p>
+          <h3 className="font-semibold text-slate-900 mb-1">{t("virtual_title")}</h3>
+          <p className="text-slate-600 mb-2 text-xs">{t("virtual_desc")}</p>
           <label className="flex items-start gap-2 cursor-pointer">
             <input type="checkbox" checked={data.virtualConsent}
               onChange={e => update("virtualConsent", e.target.checked)}
               className="w-4 h-4 mt-0.5 text-blue-600" />
-            <span>I give my consent</span>
+            <span>{t("virtual_consent")}</span>
           </label>
         </div>
       </div>
@@ -540,114 +558,142 @@ function StepSponsors({ data, update }: Props) {
 }
 
 function StepACMDemographics({ data, update, toggle }: Props) {
+  const { t } = useLang();
+  const yn: { v: string; k: "yes"|"no" }[] = [{ v: "Yes", k: "yes" }, { v: "No", k: "no" }];
+  const genderId: { v: string; k: "gender_woman"|"gender_man"|"gender_nb"|"prefer_not"|"gender_other" }[] = [
+    { v: "Woman", k: "gender_woman" }, { v: "Man", k: "gender_man" },
+    { v: "Non-binary or gender diverse", k: "gender_nb" },
+    { v: "Prefer not to disclose", k: "prefer_not" }, { v: "Other", k: "gender_other" },
+  ];
+  const birth: { v: string; k: "birth_2001"|"birth_1981"|"birth_1965"|"birth_1946"|"birth_1945"|"prefer_not" }[] = [
+    { v: "2001 or later", k: "birth_2001" }, { v: "1981 - 2000", k: "birth_1981" },
+    { v: "1965 - 1980", k: "birth_1965" }, { v: "1946 - 1964", k: "birth_1946" },
+    { v: "1945 or earlier", k: "birth_1945" }, { v: "Prefer not to disclose", k: "prefer_not" },
+  ];
+  const ethDetails: { v: string; k: "eth_we"|"eth_ee"|"eth_na"|"eth_ssa"|"eth_wa"|"eth_sa"|"eth_ec"|"eth_pac"|"eth_nam"|"eth_cac"|"eth_sam" }[] = [
+    { v: "Western Europe", k: "eth_we" }, { v: "Eastern Europe", k: "eth_ee" },
+    { v: "North Africa", k: "eth_na" }, { v: "Sub-Saharan Africa", k: "eth_ssa" },
+    { v: "West Asia / Middle East", k: "eth_wa" }, { v: "South and Southeast Asia", k: "eth_sa" },
+    { v: "East and Central Asia", k: "eth_ec" }, { v: "Pacific / Oceania", k: "eth_pac" },
+    { v: "North America", k: "eth_nam" }, { v: "Central America and Caribbean", k: "eth_cac" },
+    { v: "South America", k: "eth_sam" },
+  ];
+  const races: { v: string; k: "race_asian"|"race_pi"|"race_indig"|"race_mena"|"race_black"|"race_hispanic"|"race_white" }[] = [
+    { v: "Asian (e.g., Indian, Chinese, Japanese, Korean, Singaporean)", k: "race_asian" },
+    { v: "Pacific Islander (e.g., New Zealand Maori, Samoan, Native Hawaiian)", k: "race_pi" },
+    { v: "Indigenous (e.g., North American Cherokee, South American Quechua, Aboriginal, or Torres Strait Islander)", k: "race_indig" },
+    { v: "Middle Eastern or North African", k: "race_mena" },
+    { v: "Black", k: "race_black" }, { v: "Hispanic or Latino/a/x", k: "race_hispanic" },
+    { v: "White", k: "race_white" },
+  ];
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-600 text-center mb-2">ACM Required Demographic Questions</h2>
-      <p className="text-sm text-slate-600 mb-6">This survey is designed to help ACM measure progress in relation to diversity, equity and inclusion (DEI) in all ACM activities.</p>
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-2">{t("acm_title")}</h2>
+      <p className="text-sm text-slate-600 mb-6">{t("acm_desc")}</p>
       <div className="space-y-6">
-        <Field label="Are you in the UK or EEA (European Economic Area)?" required>
+        <Field label={t("uk_eea_q")} required>
           <div className="space-y-2">
-            {["Yes", "No"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="ukEea" checked={data.ukEea === o}
-                  onChange={() => update("ukEea", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {yn.map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="ukEea" checked={data.ukEea === o.v}
+                  onChange={() => update("ukEea", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
-        <Field label="With which gender do you most identify?" required>
+        <Field label={t("gender_id_q")} required>
           <div className="space-y-2">
-            {["Woman", "Man", "Non-binary or gender diverse", "Prefer not to disclose", "Other"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="genderIdentity" checked={data.genderIdentity === o}
-                  onChange={() => update("genderIdentity", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {genderId.map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="genderIdentity" checked={data.genderIdentity === o.v}
+                  onChange={() => update("genderIdentity", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
-        <Field label="When were you born?" required>
+        <Field label={t("birth_q")} required>
           <div className="space-y-2">
-            {BIRTH_YEAR_OPTIONS.map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="birthYear" checked={data.birthYear === o}
-                  onChange={() => update("birthYear", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {birth.map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="birthYear" checked={data.birthYear === o.v}
+                  onChange={() => update("birthYear", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
-        <Field label="What are your ethnic origins or ancestry?" required>
+        <Field label={t("ethnic_q")} required>
           <div className="space-y-2 mb-3">
-            {["Prefer not to disclose", "Make your selections"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="ethnicOrigin" checked={data.ethnicOrigin === o}
-                  onChange={() => update("ethnicOrigin", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {[{ v: "Prefer not to disclose", k: "prefer_not" as const }, { v: "Make your selections", k: "make_selections" as const }].map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="ethnicOrigin" checked={data.ethnicOrigin === o.v}
+                  onChange={() => update("ethnicOrigin", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
           {data.ethnicOrigin === "Make your selections" && (
             <div className="ml-6 space-y-2 border-l-2 border-blue-200 pl-4">
-              <p className="text-sm font-medium">Select ALL that apply:</p>
-              {ETHNIC_ORIGIN_OPTIONS.map(o => (
-                <label key={o} className="flex items-center gap-2 cursor-pointer">
+              <p className="text-sm font-medium">{t("select_all")}</p>
+              {ethDetails.map(o => (
+                <label key={o.v} className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox"
-                    checked={data.ethnicOriginDetails.includes(o)}
-                    onChange={() => toggle?.("ethnicOriginDetails", o)}
+                    checked={data.ethnicOriginDetails.includes(o.v)}
+                    onChange={() => toggle?.("ethnicOriginDetails", o.v)}
                     className="w-4 h-4 text-blue-600" />
-                  <span>{o}</span>
+                  <span>{t(o.k)}</span>
                 </label>
               ))}
             </div>
           )}
         </Field>
 
-        <Field label="How would you identify yourself in terms of race?" required>
+        <Field label={t("race_q")} required>
           <div className="space-y-2 mb-3">
-            {["Prefer not to disclose", "Make your selections"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="race" checked={data.race === o}
-                  onChange={() => update("race", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {[{ v: "Prefer not to disclose", k: "prefer_not" as const }, { v: "Make your selections", k: "make_selections" as const }].map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="race" checked={data.race === o.v}
+                  onChange={() => update("race", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
           {data.race === "Make your selections" && (
             <div className="ml-6 space-y-2 border-l-2 border-blue-200 pl-4">
-              <p className="text-sm font-medium">Select ALL that apply:</p>
-              {RACE_OPTIONS.map(o => (
-                <label key={o} className="flex items-start gap-2 cursor-pointer">
+              <p className="text-sm font-medium">{t("select_all")}</p>
+              {races.map(o => (
+                <label key={o.v} className="flex items-start gap-2 cursor-pointer">
                   <input type="checkbox"
-                    checked={data.raceDetails.includes(o)}
-                    onChange={() => toggle?.("raceDetails", o)}
+                    checked={data.raceDetails.includes(o.v)}
+                    onChange={() => toggle?.("raceDetails", o.v)}
                     className="w-4 h-4 mt-0.5 text-blue-600" />
-                  <span className="text-sm">{o}</span>
+                  <span className="text-sm">{t(o.k)}</span>
                 </label>
               ))}
             </div>
           )}
         </Field>
 
-        <Field label="Do you have a disability?" required>
+        <Field label={t("disability_q2")} required>
           <div className="space-y-2">
-            {["I do not have a disability or impairment", "Prefer not to disclose", "Make your selections"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="acmDisability" checked={data.acmDisability === o}
-                  onChange={() => update("acmDisability", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {[{ v: "I do not have a disability or impairment", k: "no_disability" as const }, { v: "Prefer not to disclose", k: "prefer_not" as const }, { v: "Make your selections", k: "make_selections" as const }].map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="acmDisability" checked={data.acmDisability === o.v}
+                  onChange={() => update("acmDisability", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
-        <Field label="Where do you currently live?" required>
+        <Field label={t("live_q")} required>
           <select className="fse-input" value={data.currentCountry} onChange={e => update("currentCountry", e.target.value)}>
-            <option value="">Select ONE…</option>
+            <option value="">{t("select_one")}</option>
             {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </Field>
@@ -657,10 +703,12 @@ function StepACMDemographics({ data, update, toggle }: Props) {
 }
 
 function StepItems({ data, update }: Props) {
+  const { t } = useLang();
+  const yn: { v: string; k: "yes"|"no" }[] = [{ v: "Yes", k: "yes" }, { v: "No", k: "no" }];
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-600 text-center mb-2">Registration Items</h2>
-      <p className="text-center text-slate-600 mb-6">Select an item and click Next.</p>
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-2">{t("items_title")}</h2>
+      <p className="text-center text-slate-600 mb-6">{t("items_desc")}</p>
       <div className="space-y-3">
         {REGISTRATION_ITEMS.map(item => (
           <label key={item.id} className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition ${data.mainItem === item.id ? "border-blue-600 bg-blue-50" : "border-slate-200 hover:border-slate-300"}`}>
@@ -674,56 +722,56 @@ function StepItems({ data, update }: Props) {
             </div>
             <div className="text-right">
               <div className="font-bold text-slate-900">${item.price.toLocaleString()}.00</div>
-              {data.mainItem === item.id && <div className="text-xs text-blue-600 font-medium">Selected</div>}
+              {data.mainItem === item.id && <div className="text-xs text-blue-600 font-medium">{t("selected")}</div>}
             </div>
           </label>
         ))}
       </div>
 
       <div className="mt-8 space-y-4 pt-6 border-t border-slate-200">
-        <Field label="Main Conference Banquet">
+        <Field label={t("banquet_q")}>
           <div className="space-y-2">
-            {["Yes, I will attend (Included)", "No, I choose to opt out"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="banquet" checked={data.banquet === o}
-                  onChange={() => update("banquet", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {[{ v: "Yes, I will attend (Included)", k: "banquet_yes" as const }, { v: "No, I choose to opt out", k: "banquet_no" as const }].map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="banquet" checked={data.banquet === o.v}
+                  onChange={() => update("banquet", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
-        <Field label="The FSE Industry Mentoring Symposium will run in parallel with the FSE main conference. Will you be attending this event?">
+        <Field label={t("mentoring_q")}>
           <div className="space-y-2">
-            {["Yes", "No"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="mentoring" checked={data.mentoringSymposium === o}
-                  onChange={() => update("mentoringSymposium", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {yn.map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="mentoring" checked={data.mentoringSymposium === o.v}
+                  onChange={() => update("mentoringSymposium", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
-        <Field label="Are you a paper author? - If yes, FSE track and paper ID are required">
+        <Field label={t("paper_q")}>
           <div className="space-y-2">
-            {["Yes", "No"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="paperAuthor" checked={data.paperAuthor === o}
-                  onChange={() => update("paperAuthor", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {yn.map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="paperAuthor" checked={data.paperAuthor === o.v}
+                  onChange={() => update("paperAuthor", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
         </Field>
 
-        <Field label="Do you have re-routed presentations from past years?">
+        <Field label={t("rerouted_q")}>
           <div className="space-y-2">
-            {["Yes", "No"].map(o => (
-              <label key={o} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="rerouted" checked={data.reroutedPresentations === o}
-                  onChange={() => update("reroutedPresentations", o)} className="w-4 h-4 text-blue-600" />
-                <span>{o}</span>
+            {yn.map(o => (
+              <label key={o.v} className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="rerouted" checked={data.reroutedPresentations === o.v}
+                  onChange={() => update("reroutedPresentations", o.v)} className="w-4 h-4 text-blue-600" />
+                <span>{t(o.k)}</span>
               </label>
             ))}
           </div>
@@ -734,10 +782,11 @@ function StepItems({ data, update }: Props) {
 }
 
 function StepAddOns({ data, toggle }: Props) {
+  const { t } = useLang();
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-600 text-center mb-2">Additional Items</h2>
-      <p className="text-center text-slate-600 mb-6">Select Registration Add-On items or Banquet Tickets you&apos;d like to purchase.</p>
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-2">{t("addons_title")}</h2>
+      <p className="text-center text-slate-600 mb-6">{t("addons_desc")}</p>
       <div className="space-y-3 mb-8">
         {ADD_ONS.map(item => (
           <label key={item.id} className={`flex items-center justify-between p-4 rounded-lg border-2 transition ${item.full ? "opacity-60 cursor-not-allowed" : "cursor-pointer"} ${data.addOns.includes(item.id) ? "border-blue-600 bg-blue-50" : "border-slate-200 hover:border-slate-300"}`}>
@@ -749,16 +798,16 @@ function StepAddOns({ data, toggle }: Props) {
               <div className="font-medium text-slate-900">{item.label}</div>
             </div>
             <div className="text-right">
-              <div className="font-bold text-slate-900">${item.price}.00 each</div>
-              {item.full && <div className="text-xs text-red-600">Capacity Full</div>}
+              <div className="font-bold text-slate-900">${item.price}.00 {t("each")}</div>
+              {item.full && <div className="text-xs text-red-600">{t("full")}</div>}
             </div>
           </label>
         ))}
       </div>
 
       <div className="space-y-6 pt-6 border-t border-slate-200">
-        <Field label="Which one-day co-located event/conference will you attend?">
-          <p className="text-xs text-slate-600 mb-2">Please ensure you have registered for the One-Day Co-Located Event/Conference (or add-on) on the corresponding day.</p>
+        <Field label={t("one_day_q")}>
+          <p className="text-xs text-slate-600 mb-2">{t("one_day_help")}</p>
           <div className="space-y-2 max-h-72 overflow-y-auto pr-2">
             {ONE_DAY_EVENTS.map(o => (
               <label key={o} className="flex items-center gap-2 cursor-pointer">
@@ -772,8 +821,8 @@ function StepAddOns({ data, toggle }: Props) {
           </div>
         </Field>
 
-        <Field label="Which co-located conference will you attend?">
-          <p className="text-xs text-slate-600 mb-2">Please ensure you have registered for the Co-Located Conference ONLY (or add-on) and/or AIware (or AIware + FSE combo).</p>
+        <Field label={t("co_located_q")}>
+          <p className="text-xs text-slate-600 mb-2">{t("co_located_help")}</p>
           <div className="space-y-2">
             {CO_LOCATED_CONFERENCES.map(o => (
               <label key={o} className="flex items-start gap-2 cursor-pointer">
@@ -792,25 +841,26 @@ function StepAddOns({ data, toggle }: Props) {
 }
 
 function StepReview({ data, total }: { data: FormState; total: number }) {
+  const { t } = useLang();
   const main = REGISTRATION_ITEMS.find(i => i.id === data.mainItem);
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Review Your Registration</h2>
+      <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">{t("review_title")}</h2>
       <div className="space-y-4 text-sm">
-        <Section title="Personal Information">
-          <Row label="Name" value={`${data.firstName} ${data.lastName}`} />
-          <Row label="Email" value={data.email} />
-          <Row label="Registration Type" value={data.registrationType} />
+        <Section title={t("section_personal")}>
+          <Row label={t("name")} value={`${data.firstName} ${data.lastName}`} />
+          <Row label={t("email")} value={data.email} />
+          <Row label={t("registration_type")} value={data.registrationType} />
         </Section>
 
-        <Section title="Address">
-          <Row label="Address" value={`${data.address1} ${data.address2}`.trim()} />
-          <Row label="City" value={`${data.city}, ${data.state} ${data.zipCode}`} />
-          <Row label="Country" value={data.country} />
-          <Row label="Region" value={data.region} />
+        <Section title={t("section_address")}>
+          <Row label={t("address1")} value={`${data.address1} ${data.address2}`.trim()} />
+          <Row label={t("city")} value={`${data.city}, ${data.state} ${data.zipCode}`} />
+          <Row label={t("country")} value={data.country} />
+          <Row label={t("region_q")} value={data.region} />
         </Section>
 
-        <Section title="Selected Items">
+        <Section title={t("section_items")}>
           {main && <Row label={main.label} value={`$${main.price}.00`} />}
           {data.addOns.map(id => {
             const a = ADD_ONS.find(x => x.id === id);
@@ -819,11 +869,11 @@ function StepReview({ data, total }: { data: FormState; total: number }) {
         </Section>
 
         <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 flex items-center justify-between">
-          <span className="font-semibold text-slate-900">Total Amount</span>
+          <span className="font-semibold text-slate-900">{t("total_amount")}</span>
           <span className="text-2xl font-bold text-blue-600">${total.toFixed(2)}</span>
         </div>
 
-        <p className="text-xs text-slate-500 text-center mt-4">By submitting, you confirm the information provided is accurate.</p>
+        <p className="text-xs text-slate-500 text-center mt-4">{t("review_legal")}</p>
       </div>
     </div>
   );
