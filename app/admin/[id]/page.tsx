@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PrintButton } from "@/components/print-button";
+import { DeleteButton } from "@/components/delete-button";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,10 @@ export default async function RegistrationDetail({ params }: { params: Promise<{
           <Link href="/admin" className="text-sm text-slate-600 hover:text-slate-900">
             ← Back to dashboard
           </Link>
-          <PrintButton />
+          <div className="flex items-center gap-2">
+            <PrintButton />
+            <DeleteButton id={r.id} name={`${r.firstName} ${r.lastName}`} />
+          </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10 print:shadow-none print:border-0 print:rounded-none print:p-0">

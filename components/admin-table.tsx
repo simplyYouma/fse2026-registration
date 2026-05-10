@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { DeleteButton } from "./delete-button";
 
 type Row = {
   id: string;
@@ -16,6 +18,7 @@ type Row = {
 };
 
 export function AdminTable({ rows }: { rows: Row[] }) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [countryFilter, setCountryFilter] = useState("");
@@ -40,28 +43,33 @@ export function AdminTable({ rows }: { rows: Row[] }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="p-4 border-b border-slate-200 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-        <div className="flex flex-col sm:flex-row gap-2 flex-1">
+      <div className="p-4 border-b border-slate-200 grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-3 md:items-center">
+        <div className="relative">
+          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           <input
             type="search"
-            placeholder="Search name, email, ID…"
+            placeholder="Search by name, email, or ID…"
             value={query}
             onChange={e => setQuery(e.target.value)}
-            className="fse-input flex-1 max-w-md"
+            className="fse-input w-full pl-9 min-w-0"
           />
-          <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
-            className="fse-input sm:w-48">
-            <option value="">All types</option>
-            {types.map(t => <option key={t} value={t}>{t}</option>)}
-          </select>
-          <select value={countryFilter} onChange={e => setCountryFilter(e.target.value)}
-            className="fse-input sm:w-44">
-            <option value="">All countries</option>
-            {countries.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
         </div>
-        <div className="text-sm text-slate-600 whitespace-nowrap">
-          {filtered.length} of {rows.length}
+        <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
+          className="fse-input w-full md:w-48">
+          <option value="">All types</option>
+          {types.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
+        <select value={countryFilter} onChange={e => setCountryFilter(e.target.value)}
+          className="fse-input w-full md:w-44">
+          <option value="">All countries</option>
+          {countries.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <div className="text-sm text-slate-600 whitespace-nowrap text-center md:text-right">
+          <span className="font-semibold text-slate-900">{filtered.length}</span> of {rows.length}
         </div>
       </div>
 
@@ -95,6 +103,8 @@ export function AdminTable({ rows }: { rows: Row[] }) {
                     className="text-blue-600 hover:text-blue-800 underline text-xs font-medium">
                     View
                   </Link>
+                  <DeleteButton id={r.id} name={`${r.firstName} ${r.lastName}`}
+                    variant="compact" onDeleted={() => router.refresh()} />
                 </Td>
               </tr>
             ))}
