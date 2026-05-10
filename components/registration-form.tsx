@@ -940,9 +940,18 @@ function StepAddOns({ data, toggle }: Props) {
                   checked={data.oneDayEvent.includes(w.id)}
                   onChange={() => toggle?.("oneDayEvent", w.id)}
                   className="w-4 h-4 mt-0.5 text-blue-600 cursor-pointer" />
-                <label htmlFor={`ws-${w.id}`} className="flex-1 cursor-pointer text-sm">
-                  <div className="font-semibold text-slate-900">{w.acronym}</div>
-                  <div className="text-xs text-slate-600 leading-snug">{w.name}</div>
+                <label htmlFor={`ws-${w.id}`} className="flex-1 cursor-pointer text-sm min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-slate-900">{w.acronym}</span>
+                    {w.date && (
+                      <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-medium ${
+                        w.date.startsWith("TBA") ? "bg-slate-100 text-slate-600" : "bg-blue-100 text-blue-700"
+                      }`}>
+                        {w.date}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-slate-600 leading-snug mt-0.5">{w.name}</div>
                 </label>
                 {w.url && (
                   <a href={w.url} target="_blank" rel="noopener noreferrer"
