@@ -148,8 +148,7 @@ export default function RegistrationForm() {
         </div>
         <h2 className="text-2xl font-bold text-slate-900 mb-2">{t("success_title")}</h2>
         <p className="text-slate-600 mb-1">{t("success_thanks")}</p>
-        <p className="text-sm text-slate-500 mb-6 break-all">{t("success_id")} <span className="font-mono">{success.id}</span></p>
-        <p className="text-slate-600">{t("success_email")} <span className="font-medium">{data.email}</span>.</p>
+        <p className="text-sm text-slate-500 break-all">{t("success_id")} <span className="font-mono">{success.id}</span></p>
       </div>
     );
   }
