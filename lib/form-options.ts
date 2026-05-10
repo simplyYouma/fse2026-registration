@@ -92,11 +92,32 @@ export const ADD_ONS = [
   { id: "dinner-banquet", label: "Dinner Banquet Ticket (on a Private Cruise)", price: 165, full: true },
 ];
 
-export const ONE_DAY_EVENTS = [
-  "ASQAP", "SEGA", "FaSE4Games", "RSE", "DevOpsSustain", "LLMSC",
-  "SEE-AIT", "IntersectionalitySE", "LLMThrust", "DISE", "SE4ES",
-  "HumanAISE", "QSE-NE", "Tutorial (July 5)", "Tutorial (July 6)",
-  "New Faculty Symposium", "Doctoral Symposium", "FSE-AIWare Competition",
+export type Workshop = { id: string; acronym: string; name: string; url?: string };
+
+export const WORKSHOPS: Workshop[] = [
+  { id: "ASQAP", acronym: "ASQAP", name: "Autonomous System Quality Assurance and Prediction with Digital Twins", url: "https://asqap.github.io/asqap2026/" },
+  { id: "SEGA", acronym: "SEGA", name: "Software Engineering for Generative Art", url: "https://sega-workshop.github.io/2026/" },
+  { id: "FaSE4Games", acronym: "FaSE4Games", name: "Foundations of Applied Software Engineering for Games", url: "https://fase4games.quest" },
+  { id: "RSE", acronym: "RSE", name: "Responsible Software Engineering", url: "https://sites.google.com/view/responsiblese2026/about" },
+  { id: "DevOpsSustain", acronym: "DevOpsSustain", name: "DevOps for Sustainability", url: "https://devopssustain.github.io/ws2026/" },
+  { id: "LLMSC", acronym: "LLMSC", name: "Large Language Model Supply Chain Analysis", url: "https://llmsc.github.io/" },
+  { id: "SEE-AIT", acronym: "SEE-AIT", name: "Software Engineering for the GenAI Transformation", url: "https://seeait.github.io/" },
+  { id: "IntersectionalitySE", acronym: "IntersectionalitySE", name: "Intersectionality and Software Engineering", url: "https://intersectionalitywork.github.io/" },
+  { id: "CauSE", acronym: "CauSE", name: "Causal Methods in Software Engineering", url: "https://causality-software-engineering.github.io/cause-workshop-2026/" },
+  { id: "LLMTrust", acronym: "LLMTrust", name: "Software Engineering for and with Trustworthy LLMs", url: "https://llmtrust2026.github.io/" },
+  { id: "DISE", acronym: "DISE", name: "Data Intensive Software Engineering", url: "https://seed-vt.github.io/dise/" },
+  { id: "SE4ES", acronym: "SE4ES", name: "Software Engineering for Engineering Simulations & Simulation Engineering", url: "https://se4es.uibk.ac.at" },
+  { id: "SE4ADS", acronym: "SE4ADS'26", name: "Software Engineering for Autonomous Driving Systems", url: "https://sora.ics.uci.edu/se4ads_26/" },
+  { id: "HumanAISE", acronym: "HumanAISE", name: "Human-Centered AI for Software Engineering", url: "https://humanai4se.github.io/" },
+  { id: "QSE-NE", acronym: "QSE-NE", name: "Quantum Software Engineering: The Next Evolution", url: "https://sites.google.com/view/qse-ne-fse26/home" },
+];
+
+export const OTHER_ONE_DAY_EVENTS = [
+  "Tutorial (July 5)",
+  "Tutorial (July 6)",
+  "New Faculty Symposium",
+  "Doctoral Symposium",
+  "FSE-AIWare Competition",
   "None (I am not attending any one-day co-located event.)",
 ];
 

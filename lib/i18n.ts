@@ -165,6 +165,10 @@ export const translations = {
     full: "Capacité atteinte",
     one_day_q: "À quel événement co-localisé d'une journée allez-vous assister ?",
     one_day_help: "Veuillez vous assurer d'être inscrit(e) à l'événement (ou option) correspondant le bon jour.",
+    workshops_section: "Workshops",
+    workshops_date_note: "Les workshops se tiennent le 5 ou le 9 juillet 2026. Cliquez sur le nom du workshop pour ouvrir son site officiel et confirmer la date et le programme.",
+    other_events_section: "Autres événements",
+    visit_website: "Voir le site",
     co_located_q: "À quelle conférence co-localisée allez-vous assister ?",
     co_located_help: "Veuillez vous assurer d'être inscrit(e) à la conférence co-localisée (ou option) et/ou AIware (ou AIware + FSE combo).",
 
@@ -382,6 +386,10 @@ export const translations = {
     full: "Capacity Full",
     one_day_q: "Which one-day co-located event/conference will you attend?",
     one_day_help: "Please ensure you have registered for the One-Day Co-Located Event/Conference (or add-on) on the corresponding day.",
+    workshops_section: "Workshops",
+    workshops_date_note: "Workshops are held on 5 or 9 July 2026. Click a workshop name to open its official website and confirm the exact date and program.",
+    other_events_section: "Other events",
+    visit_website: "Visit website",
     co_located_q: "Which co-located conference will you attend?",
     co_located_help: "Please ensure you have registered for the Co-Located Conference ONLY (or add-on) and/or AIware (or AIware + FSE combo).",
 

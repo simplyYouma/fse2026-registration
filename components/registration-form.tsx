@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useLang, LangSwitch } from "@/lib/lang-context";
 import {
   REGISTRATION_TYPES, COUNTRIES, REGISTRATION_ITEMS, ADD_ONS,
-  ONE_DAY_EVENTS, CO_LOCATED_CONFERENCES,
+  WORKSHOPS, OTHER_ONE_DAY_EVENTS, CO_LOCATED_CONFERENCES,
 } from "@/lib/form-options";
 
 type FormState = {
@@ -926,9 +926,38 @@ function StepAddOns({ data, toggle }: Props) {
 
       <div className="space-y-6 pt-6 border-t border-slate-200">
         <Field label={t("one_day_q")}>
-          <p className="text-xs text-slate-600 mb-2">{t("one_day_help")}</p>
-          <div className="space-y-2 max-h-72 overflow-y-auto pr-2">
-            {ONE_DAY_EVENTS.map(o => (
+          <p className="text-xs text-slate-600 mb-3">{t("one_day_help")}</p>
+
+          <div className="rounded-lg bg-blue-50 border border-blue-200 p-3 mb-4 text-xs text-blue-900">
+            <strong>{t("workshops_section")} — </strong>{t("workshops_date_note")}
+          </div>
+
+          <div className="text-xs uppercase tracking-wider font-semibold text-slate-500 mb-2">{t("workshops_section")}</div>
+          <div className="space-y-2 mb-5 max-h-80 overflow-y-auto pr-2">
+            {WORKSHOPS.map(w => (
+              <div key={w.id} className="flex items-start gap-3 p-2.5 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-slate-50 transition">
+                <input type="checkbox" id={`ws-${w.id}`}
+                  checked={data.oneDayEvent.includes(w.id)}
+                  onChange={() => toggle?.("oneDayEvent", w.id)}
+                  className="w-4 h-4 mt-0.5 text-blue-600 cursor-pointer" />
+                <label htmlFor={`ws-${w.id}`} className="flex-1 cursor-pointer text-sm">
+                  <div className="font-semibold text-slate-900">{w.acronym}</div>
+                  <div className="text-xs text-slate-600 leading-snug">{w.name}</div>
+                </label>
+                {w.url && (
+                  <a href={w.url} target="_blank" rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:text-blue-800 underline whitespace-nowrap shrink-0 mt-0.5"
+                    onClick={(e) => e.stopPropagation()}>
+                    {t("visit_website")} ↗
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="text-xs uppercase tracking-wider font-semibold text-slate-500 mb-2">{t("other_events_section")}</div>
+          <div className="space-y-2">
+            {OTHER_ONE_DAY_EVENTS.map(o => (
               <label key={o} className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox"
                   checked={data.oneDayEvent.includes(o)}
