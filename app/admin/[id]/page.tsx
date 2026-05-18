@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PrintButton } from "@/components/print-button";
 import { DeleteButton } from "@/components/delete-button";
+import { Copyable } from "@/components/copyable";
 
 export const dynamic = "force-dynamic";
 
@@ -30,11 +31,13 @@ export default async function RegistrationDetail({ params }: { params: Promise<{
               FSE 2026 — Registration
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-              {r.firstName} {r.lastName}
+              <Copyable value={`${r.firstName} ${r.lastName}`} />
             </h1>
-            <div className="text-slate-600 text-sm mt-1">{r.email}</div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs text-slate-500">
-              <span>ID: <span className="font-mono">{r.id}</span></span>
+            <div className="text-slate-600 text-sm mt-1">
+              <Copyable value={r.email} />
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs text-slate-500 items-center">
+              <span>ID:</span><Copyable value={r.id} className="font-mono text-slate-700" />
               <span>Submitted: {r.createdAt.toLocaleString()}</span>
             </div>
           </div>
@@ -141,12 +144,16 @@ function Section({ title, children, full }: { title: string; children: React.Rea
 }
 
 function Row({ label, value }: { label: string; value: string | null | undefined }) {
-  const display = value && String(value).trim() !== "" ? value : "—";
+  const has = value !== null && value !== undefined && String(value).trim() !== "";
   return (
     <div className="flex flex-col sm:flex-row sm:gap-3">
       <dt className="text-xs text-slate-500 sm:w-44 sm:flex-shrink-0">{label}</dt>
-      <dd className={`text-sm break-words ${display === "—" ? "text-slate-400" : "text-slate-900 font-medium"}`}>
-        {display}
+      <dd className="text-sm">
+        {has ? (
+          <Copyable value={String(value)} className="text-slate-900 font-medium" />
+        ) : (
+          <span className="text-slate-400">—</span>
+        )}
       </dd>
     </div>
   );
